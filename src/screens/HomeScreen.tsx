@@ -6,14 +6,28 @@ import { supabase } from "../services/supabase"
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">
 
+
+
 export default function HomeScreen({ navigation }: Props) {
 
-  useEffect(() => {
-    testarSupabase()
-  }, [])
+  async function adicionarPonto() {
+    const { data, error } = await supabase
+      .from("pontos_descanso")
+      .insert({
+        nome: "Posto Teste Expo",
+        descricao: "Ponto criado pelo app",
+        tipo_local: "posto",
+        foto_url: null,
 
-  async function testarSupabase() {
-    const { data, error } = await supabase.auth.getSession()
+        latitude: -23.5505,
+        longitude: -46.6333,
+
+        banheiro: true,
+        chuveiro: true,
+        restaurante: true,
+        sinal_rede: true,
+        estacionamento_caminhoes: true
+      })
 
     console.log("DATA:", data)
     console.log("ERROR:", error)
@@ -22,6 +36,11 @@ export default function HomeScreen({ navigation }: Props) {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>🚛 Home - Paradas</Text>
+
+      <Button
+        title="Criar ponto teste"
+        onPress={adicionarPonto}
+      />
 
       <Button
         title="Ir para Detalhes"
