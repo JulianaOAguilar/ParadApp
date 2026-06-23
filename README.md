@@ -62,12 +62,15 @@ npm start ou npx expo start
 src
 ├── screens
 ├── components
-└── navigation
+├── navigation
+└── services
+
 ```
 
 * **screens**: telas do aplicativo (Home, Login, Perfil, etc.).
 * **components**: elementos reutilizáveis da interface (botões, inputs, cards, etc.).
 * **navigation**: configuração da navegação entre as telas.
+* **services**: configuração do banco.
 
 Se quiserem alterar algo, fiquem a vontade ✨ uwu
 
