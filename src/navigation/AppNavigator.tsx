@@ -10,6 +10,8 @@ export default function AppNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Details" component={StopDetailsScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+       <Stack.Screen name="Details" component={StopDetailsScreen} />
     </Stack.Navigator>
   );
 }
