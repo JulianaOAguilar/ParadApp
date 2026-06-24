@@ -4,5 +4,7 @@ export type RootStackParamList = {
   Login: undefined;
   Cadastro: undefined;
   TiposLocal: undefined;
-    NovoPonto: { tipo: string } // 👈 AQUI
+  NovoPonto: { tipo: string } // 👈 AQUI
+  Esquecer: undefined;
+  Redefinir: undefined;
 };

@@ -6,11 +6,13 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "paradas",
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
+        "permissions": ["INTERNET"],
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
