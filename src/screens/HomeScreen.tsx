@@ -1,12 +1,10 @@
-import { useEffect } from "react"
 import { View, Text, Button } from "react-native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import type { RootStackParamList } from "../navigation/AppNavigator"
 import { supabase } from "../services/supabase"
 
-type Props = NativeStackScreenProps<RootStackParamList, "Home">
+import { RootStackParamList } from "../navigation/types";
 
-
+type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export default function HomeScreen({ navigation }: Props) {
 
