@@ -3,4 +3,6 @@ export type RootStackParamList = {
   Details: undefined;
   Login: undefined;
   Cadastro: undefined;
+  Esquecer: undefined;
+  Redefinir: undefined;
 };
