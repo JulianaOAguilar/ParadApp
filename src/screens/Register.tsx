@@ -1,8 +1,8 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/AppNavigator";
 import { useState } from "react";
 import { StyleSheet, Text, Alert, KeyboardAvoidingView, Platform, ScrollView, View, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { supabase } from "../services/supabase";
+import { RootStackParamList } from "../navigation/types";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, "Cadastro">

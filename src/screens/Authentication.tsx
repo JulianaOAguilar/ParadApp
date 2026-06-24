@@ -1,8 +1,8 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/AppNavigator";
 import { StyleSheet, View, Text, Alert, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useState } from "react";
 import { supabase } from "../services/supabase";
+import { RootStackParamList } from "../navigation/types";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">
