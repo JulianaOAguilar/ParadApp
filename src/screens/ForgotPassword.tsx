@@ -3,6 +3,8 @@ import { RootStackParamList } from "../navigation/types";
 import { useState } from "react";
 import { StyleSheet, Text, Alert, View, TouchableOpacity, KeyboardAvoidingView, Platform, TextInput, ActivityIndicator } from "react-native";
 import { supabase } from "../services/supabase";
+import React from "react";
+
 
 type Props = NativeStackScreenProps<RootStackParamList, "Esquecer">
 
@@ -11,7 +13,7 @@ export default function Authentication({ navigation }: Props) {
     const styles = StyleSheet.create({
     container: {
     flex: 1,
-    backgroundColor: "#111827",
+    backgroundColor: "#5A84E0",
     paddingHorizontal: 24,
   },
 
@@ -20,10 +22,7 @@ export default function Authentication({ navigation }: Props) {
     marginTop: 56,
     alignSelf: "flex-start",
   },
-  textoBotaoVoltarTopo: {
-    color: "#9CA3AF",
-    fontSize: 15,
-  },
+
 
   // Conteúdo principal
   conteudo: {
@@ -39,14 +38,24 @@ export default function Authentication({ navigation }: Props) {
   titulo: {
     fontSize: 26,
     fontWeight: "800",
-    color: "#F9FAFB",
+    color: "#414141",
     textAlign: "center",
     marginBottom: 12,
     letterSpacing: -0.5,
   },
+
+      titulo1: {
+    fontSize: 60,
+      fontFamily: "ProtestStrike",
+    fontWeight: "800",
+        textAlign: "center",
+
+    color: "#414141",
+    letterSpacing: -0.5,
+  },
   subtitulo: {
     fontSize: 15,
-    color: "#6B7280",
+    color: "#000000",
     textAlign: "center",
     lineHeight: 22,
     marginBottom: 32,
@@ -54,15 +63,14 @@ export default function Authentication({ navigation }: Props) {
   label: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#9CA3AF",
+    color: "#000000",
     textTransform: "uppercase",
     letterSpacing: 0.8,
     marginBottom: 6,
   },
   input: {
-    backgroundColor: "#1F2937",
-    borderWidth: 1,
-    borderColor: "#374151",
+    backgroundColor: "#cbe1ff",
+
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -70,12 +78,12 @@ export default function Authentication({ navigation }: Props) {
     color: "#F9FAFB",
   },
   botaoEnviar: {
-    backgroundColor: "#F59E0B",
-    borderRadius: 12,
+    backgroundColor: "#83ACE1",
+    borderRadius: 30,
     paddingVertical: 16,
     alignItems: "center",
     marginTop: 20,
-    shadowColor: "#F59E0B",
+    shadowColor: "#9ac6ff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -103,6 +111,9 @@ export default function Authentication({ navigation }: Props) {
     fontSize: 56,
     marginBottom: 20,
   },
+
+
+
   tituloConfirmacao: {
     fontSize: 26,
     fontWeight: "800",
@@ -214,11 +225,12 @@ export default function Authentication({ navigation }: Props) {
         style={styles.botaoVoltarTopo}
         onPress={() => navigation.goBack()}
       >
-        <Text style={styles.textoBotaoVoltarTopo}>← Voltar</Text>
       </TouchableOpacity>
 
       <View style={styles.conteudo}>
-        <Text style={styles.icone}>🔑</Text>
+
+        <Text style={styles.titulo1}>ParadApp</Text>
+
         <Text style={styles.titulo}>Esqueceu a senha?</Text>
         <Text style={styles.subtitulo}>
           Digite seu e-mail e enviaremos um link para você criar uma nova senha.
@@ -228,7 +240,7 @@ export default function Authentication({ navigation }: Props) {
         <TextInput
           style={styles.input}
           placeholder="seu@email.com"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#000000"
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
