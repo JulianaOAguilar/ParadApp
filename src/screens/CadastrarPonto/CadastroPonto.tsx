@@ -9,7 +9,7 @@ import {
   Alert,
   Image
 } from "react-native"
-
+import React from "react";
 import { useState } from "react"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../../navigation/types"
@@ -96,6 +96,16 @@ export default function CreatePointScreen({ route, navigation }: Props) {
   }
 
   async function salvar() {
+
+    const {
+  data: { user },
+} = await supabase.auth.getUser()
+
+if (!user) {
+  Alert.alert("Erro", "Usuário não autenticado")
+  return
+}
+
     if (!nome) {
       Alert.alert("Erro", "Preencha o nome do local")
       return
@@ -108,10 +118,9 @@ export default function CreatePointScreen({ route, navigation }: Props) {
           nome,
           descricao,
           tipo_local: tipoMap[tipo] || "outro",
+          localizacao,
 
           foto_url: foto,
-          latitude: null,
-          longitude: null,
 
           banheiro,
           chuveiro,
@@ -119,7 +128,7 @@ export default function CreatePointScreen({ route, navigation }: Props) {
           sinal_rede: sinalRede,
           estacionamento_caminhoes: estacionamentoCaminhoes,
 
-          usuario_id: null,
+          usuario_id: user.id,
         }
       ])
 

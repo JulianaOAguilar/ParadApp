@@ -3,6 +3,7 @@ import { RootStackParamList } from "../navigation/types";
 import { useState, useEffect } from "react";
 import { StyleSheet, Text, Alert, View, ActivityIndicator, TouchableOpacity, KeyboardAvoidingView, Platform, TextInput } from "react-native";
 import { supabase } from "../services/supabase";
+import React from "react";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Redefinir">
 

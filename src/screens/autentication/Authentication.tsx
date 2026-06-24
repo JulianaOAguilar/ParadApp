@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Alert, KeyboardAvoidingView, Platform, TextInpu
 import { useState } from "react";
 import { supabase } from "../../services/supabase";
 import { RootStackParamList } from "../../navigation/types";
+import React from "react";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 

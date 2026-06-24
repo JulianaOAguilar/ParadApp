@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native"
+import React from "react";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../navigation/types"
 import { useEffect, useState } from "react"
