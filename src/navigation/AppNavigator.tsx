@@ -11,6 +11,12 @@ import StopDetailsScreen from "../screens/StopDetailsScreen";
 import CadastroPonto from "../screens/CadastrarPonto/CadastroPonto";
 import NovoPontoTipos from "../screens/CadastrarPonto/TiposLocal";
 
+import Authentication from "../screens/autentication/Authentication";
+import Register from "../screens/autentication/Register";
+import StopDetailsScreen from "../screens/StopDetailsScreen";
+import CadastroPonto from "../screens/CadastrarPonto/CadastroPonto";
+import NovoPontoTipos from "../screens/CadastrarPonto/TiposLocal";
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
