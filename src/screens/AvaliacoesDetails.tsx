@@ -26,12 +26,7 @@ export default function AvaliacaoDetalhhes({ route }: Props) {
           {"☆".repeat(5 - avaliacao.nota_geral)}
         </Text>
 
-        {/* COMENTÁRIO */}
-        {avaliacao.comentario && (
-          <Text style={styles.comentario}>
-            {avaliacao.comentario}
-          </Text>
-        )}
+      
 
         {/* DETALHES */}
         <Text style={styles.title}>-- Detalhes --</Text>
@@ -60,8 +55,21 @@ export default function AvaliacaoDetalhhes({ route }: Props) {
           {"☆".repeat(5 - avaliacao.nota_estrutura)}
         </Text>
 
+<Text style={styles.title}>
+    Comentário (opcional):
+        </Text>
+          {/* COMENTÁRIO */}
+         {avaliacao.comentario && (
+          <Text style={styles.comentario}>
+            {avaliacao.comentario}
+          </Text>
+        )}
+
         {/* IMAGEM */}
         {/* IMAGEM */}
+        <Text style={styles.title}>
+    Mídia:
+        </Text>
 {avaliacao.midia_url && (
   <Image
     source={{ uri: avaliacao.midia_url }}
