@@ -16,6 +16,8 @@ import AvaliarLocal from "../screens/Avaliacao/AvaliarLocal";
 import AvaliacaoDetalhhes from "../screens/Avaliacao/AvaliacoesDetails";
 import Denuncia from "../screens/Denuncias";
 
+import TabNavigator from "./TabNavigator"; 
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,7 +28,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Cadastro" component={Register} />
       <Stack.Screen name="Esquecer" component={ForgotPassword} />
       <Stack.Screen name="Redefinir" component={NewPassword} />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="TiposLocal" component={NovoPontoTipos} />
       <Stack.Screen name="NovoPonto" component={CadastroPonto} />
       <Stack.Screen name="Details" component={StopDetailsScreen} />

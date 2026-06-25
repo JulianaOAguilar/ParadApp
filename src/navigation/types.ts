@@ -12,5 +12,5 @@ export type RootStackParamList = {
   Denuncia:
   | { ponto: any; avaliacao?: undefined }
   | { avaliacao: any; ponto?: undefined };
-
+  Pesquisar: undefined;
 };
