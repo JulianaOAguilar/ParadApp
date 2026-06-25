@@ -13,8 +13,8 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/types";
 import { useEffect, useState } from "react";
 import { supabase } from "../services/supabase";
-
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
+
 
 export default function HomeScreen({ navigation }: Props) {
   const [pontos, setPontos] = useState<any[]>([]);
@@ -118,6 +118,7 @@ function renderStars(media: number) {
           data={pontos}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.card}
@@ -166,7 +167,9 @@ function renderStars(media: number) {
       )}
     </View>
 
+
     {/* FOOTER */}
+    {/*}
     <View style={styles.footer}>
       <TouchableOpacity
         style={styles.logoutButton}
@@ -176,17 +179,8 @@ function renderStars(media: number) {
           Sair
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => navigation.navigate("TiposLocal")}
-      >
-        <Text style={styles.addText}>
-          + Novo Ponto
-        </Text>
-      </TouchableOpacity>
-    </View>
-  </View>
+    </View>*/}
+  </View> 
      );
 }const styles = StyleSheet.create({
   container: {
@@ -221,6 +215,7 @@ function renderStars(media: number) {
     backgroundColor: "#F8FAFC",
     borderRadius: 20,
     padding: 12,
+    paddingBottom: 80,
   },
 
   emptyState: {

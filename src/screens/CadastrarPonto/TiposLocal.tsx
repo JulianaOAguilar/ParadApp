@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../../navigation/types"
 import React from "react";
 type Props = NativeStackScreenProps<RootStackParamList, "TiposLocal">
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function NovoPontoTipos({ navigation }: Props) {
 
@@ -16,7 +17,7 @@ export default function NovoPontoTipos({ navigation }: Props) {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
      <Text style={styles.title}>Adicionar Nova Parada</Text>
 
       <Text style={styles.title1}>Tipo do local</Text>
@@ -45,7 +46,7 @@ export default function NovoPontoTipos({ navigation }: Props) {
           </View>
         </TouchableOpacity>
       ))}
-    </View>
+    </SafeAreaView>
   )
 }
 
