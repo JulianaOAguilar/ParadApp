@@ -233,7 +233,7 @@ export default function AvaliarLocal({ route, navigation }: Props) {
           <Text style={styles.label}>Comentário (opcional)</Text>
           <TextInput
             style={styles.comentarioInput}
-            placeholder="Descreva o motivo da denúncia..."
+            placeholder="Descreva a sua avaliação..."
             placeholderTextColor="#aaa"
             multiline
             maxLength={250}
