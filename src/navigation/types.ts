@@ -9,5 +9,8 @@ export type RootStackParamList = {
   Esquecer: undefined;
   Redefinir: undefined;
   AvaliarLocal: { ponto: any }; 
+  Denuncia:
+  | { ponto: any; avaliacao?: undefined }
+  | { avaliacao: any; ponto?: undefined };
 
 };

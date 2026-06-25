@@ -52,8 +52,28 @@ useEffect(() => {
 
 
   return (
+
+    
     <ScrollView style={styles.container}>
+
+      
       <View style={styles.card}>
+
+        <View style={styles.header}>
+  <Text style={styles.title}>{ponto.nome}</Text>
+
+  <TouchableOpacity
+    style={styles.reportBtn}
+    onPress={() =>
+      navigation.navigate("Denuncia", {
+        ponto: ponto,
+      })
+    }
+  >
+    <Text style={styles.reportText}>⚠️ Denunciar</Text>
+  </TouchableOpacity>
+</View>
+
         {ponto.foto_url && (
           <Image source={{ uri: ponto.foto_url }} style={styles.image} />
         )}
@@ -251,6 +271,25 @@ verDetalhesText: {
     fontWeight: "700",
     fontSize: 12,
   },
+
+  header: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+},
+
+reportBtn: {
+  backgroundColor: "#FEE2E2",
+  paddingHorizontal: 10,
+  paddingVertical: 6,
+  borderRadius: 8,
+},
+
+reportText: {
+  color: "#DC2626",
+  fontWeight: "700",
+  fontSize: 12,
+},
 
   sectionTitle: {
     fontSize: 18,

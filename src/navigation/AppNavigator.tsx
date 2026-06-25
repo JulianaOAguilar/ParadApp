@@ -14,6 +14,7 @@ import NovoPontoTipos from "../screens/CadastrarPonto/TiposLocal";
 import StopDetailsScreen from "../screens/StopDetailsScreen";
 import AvaliarLocal from "../screens/Avaliacao/AvaliarLocal";
 import AvaliacaoDetalhhes from "../screens/Avaliacao/AvaliacoesDetails";
+import Denuncia from "../screens/Denuncias";
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,6 +32,8 @@ export default function AppNavigator() {
       <Stack.Screen name="Details" component={StopDetailsScreen} />
       <Stack.Screen name="AvaliarLocal" component={AvaliarLocal} />
             <Stack.Screen name="AvaliacaoDetalhes" component={AvaliacaoDetalhhes} />
+                        <Stack.Screen name="Denuncia" component={Denuncia} />
+
 
 
   
