@@ -13,7 +13,7 @@ import CadastroPonto from "../screens/CadastrarPonto/CadastroPonto";
 import NovoPontoTipos from "../screens/CadastrarPonto/TiposLocal";
 import StopDetailsScreen from "../screens/StopDetailsScreen";
 import AvaliarLocal from "../screens/Avaliacao/AvaliarLocal";
-import AvaliacaoDetalhhes from "../screens/AvaliacoesDetails";
+import AvaliacaoDetalhhes from "../screens/Avaliacao/AvaliacoesDetails";
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
