@@ -4,6 +4,7 @@
   "main": "expo/AppEntry",
   "dependencies": {
     "@expo-google-fonts/protest-strike": "^0.4.0",
+    "@expo/vector-icons": "^15.0.3",
     "@react-navigation/native": "^7.3.3",
     "@react-navigation/native-stack": "^7.17.5",
     "@supabase/supabase-js": "^2.108.2",

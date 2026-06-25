@@ -193,6 +193,14 @@ export default function Register({ navigation }: Props) {
       },
     })
 
+    if (data.user) {
+    await supabase.from("usuarios").insert({
+      id: data.user.id,
+      nome: nome,
+      email: email.trim().toLowerCase(),
+    });
+}
+
     setCarregando(false)
 
     if (error) {

@@ -8,5 +8,8 @@ export type RootStackParamList = {
   Redefinir: undefined;
   details: {
     ponto: any
-  }
+  };
+  AvaliarLocal: {
+    ponto: any
+  };
 };

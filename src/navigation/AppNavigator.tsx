@@ -12,6 +12,7 @@ import Register from "../screens/autentication/Register";
 import CadastroPonto from "../screens/CadastrarPonto/CadastroPonto";
 import NovoPontoTipos from "../screens/CadastrarPonto/TiposLocal";
 import StopDetailsScreen from "../screens/StopDetailsScreen";
+import AvaliarLocal from "../screens/Avaliacao/AvaliarLocal";
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -27,7 +28,7 @@ export default function AppNavigator() {
       <Stack.Screen name="TiposLocal" component={NovoPontoTipos} />
       <Stack.Screen name="NovoPonto" component={CadastroPonto} />
       <Stack.Screen name="details" component={StopDetailsScreen} />
-
+      <Stack.Screen name="AvaliarLocal" component={AvaliarLocal} />
 
   
       
