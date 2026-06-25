@@ -6,10 +6,4 @@ export type RootStackParamList = {
   NovoPonto: { tipo: string } // 👈 AQUI
   Esquecer: undefined;
   Redefinir: undefined;
-  details: {
-    ponto: any
-  };
-  AvaliarLocal: {
-    ponto: any
-  };
 };
