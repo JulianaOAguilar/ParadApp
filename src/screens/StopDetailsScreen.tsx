@@ -12,7 +12,7 @@ import { RootStackParamList } from "../navigation/types";
 import React, {useEffect, useState} from "react";
 import { supabase } from "../services/supabase";
 
-type Props = NativeStackScreenProps<RootStackParamList, "details">;
+type Props = NativeStackScreenProps<RootStackParamList, "Details">;
 
 
 export default function StopDetailsScreen({ route, navigation }: Props) {
