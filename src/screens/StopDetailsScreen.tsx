@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/types";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabase";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
@@ -20,17 +20,36 @@ export default function StopDetailsScreen({ route, navigation }: Props) {
 
   const [avaliacoes, setAvaliacoes] = useState<any[]>([]);
 
-  useEffect(() => {
-    async function buscarAvaliacoes() {
-    const { data } = await supabase
-      .from("avaliacoes")
-      .select("*, usuarios(nome)")
-      .eq("ponto_id", ponto.id)
-      .order("criado_em", { ascending: false });
+useEffect(() => {
+  const unsubscribe = navigation.addListener("focus", () => {
+    buscarAvaliacoes();
+  });
+
+  return unsubscribe;
+}, [navigation]);
+
+
+  async function buscarAvaliacoes() {
+      const { data } = await supabase
+        .from("avaliacoes")
+        .select("*, usuarios(nome)")
+        .eq("ponto_id", ponto.id)
+        .order("criado_em", { ascending: false });
       if (data) setAvaliacoes(data);
     }
     buscarAvaliacoes();
-  }, []);
+
+  const totalAvaliacoes = avaliacoes.length;
+
+  const mediaGeral =
+    totalAvaliacoes > 0
+      ? (
+        avaliacoes.reduce((acc, av) => acc + av.nota_geral, 0) /
+        totalAvaliacoes
+      ).toFixed(1)
+      : "0.0";
+
+
 
   return (
     <ScrollView style={styles.container}>
@@ -41,14 +60,14 @@ export default function StopDetailsScreen({ route, navigation }: Props) {
 
         <Text style={styles.title}>{ponto.nome}</Text>
 
- 
+
         <Text style={styles.description}>{ponto.descricao}</Text>
 
-    
+
 
         <Text style={styles.info}>📍 {ponto.localizacao}</Text>
 
-               <View style={styles.tag}>
+        <View style={styles.tag}>
           <Text style={styles.tagText}>Tipo: {ponto.tipo_local}</Text>
         </View>
 
@@ -87,7 +106,9 @@ export default function StopDetailsScreen({ route, navigation }: Props) {
           <View>
             <Text style={styles.sectionTitle}>Avaliações</Text>
 
-            <Text style={styles.rating}>⭐⭐⭐⭐⭐ 5.0</Text>
+            <Text style={styles.rating}>
+              ⭐ {mediaGeral} ({totalAvaliacoes} avaliações)
+            </Text>
           </View>
 
           <TouchableOpacity
@@ -99,34 +120,47 @@ export default function StopDetailsScreen({ route, navigation }: Props) {
         </View>
 
         {/* Espaço para avaliações futuras */}
-        
+
         {avaliacoes.length === 0 ? (
           <View style={styles.reviewCard}>
             <Text style={styles.reviewPlaceholder}>Nenhuma avaliação ainda.</Text>
           </View>
         ) : (
           avaliacoes.map((av) => (
-        <View key={av.id} style={styles.reviewCard}>
-          <Text style={{ fontWeight: "700", color: "#111827", marginBottom: 4 }}>
-            {av.usuarios?.nome ?? "Usuário"}
-          </Text>
-          <Text style={{ color: "#F59E0B", fontSize: 16 }}>
-            {"★".repeat(av.nota_geral)}{"☆".repeat(5 - av.nota_geral)}
-          </Text>
-          {av.comentario ? (
-            <Text style={styles.reviewPlaceholder}>{av.comentario}</Text>
-          ) : null}
-          <Text style={{ color: "#94A3B8", fontSize: 11, marginTop: 4 }}>
-            Serviço: {av.nota_servico}★ · Limpeza: {av.nota_limpeza}★ · Estrutura: {av.nota_estrutura}★
-          </Text>
-          {av.midia_url ? (
-            <Image
-              source={{ uri: av.midia_url }}
-              style={{ width: "100%", height: 120, borderRadius: 8, marginTop: 8 }}
-            />
-          ) : null}
-        </View>
-        ))
+            <View key={av.id} style={styles.reviewCard}>
+              <Text style={{ fontWeight: "700", color: "#111827", marginBottom: 4 }}>
+                {av.usuarios?.nome ?? "Usuário"}
+              </Text>
+              <Text style={{ color: "#F59E0B", fontSize: 16 }}>
+                {"★".repeat(av.nota_geral)}{"☆".repeat(5 - av.nota_geral)}
+              </Text>
+              {av.comentario ? (
+                <Text style={styles.reviewPlaceholder}>{av.comentario}</Text>
+              ) : null}
+
+              {av.midia_url ? (
+                <Image
+                  source={{ uri: av.midia_url }}
+                  style={{ width: "100%", height: 120, borderRadius: 8, marginTop: 8 }}
+                />
+              ) : null}
+
+              <TouchableOpacity
+  style={styles.verDetalhesBtn}
+  onPress={() =>
+    navigation.navigate("AvaliacaoDetalhes", {
+      avaliacao: av,
+    })
+  }
+>
+  <Text style={styles.verDetalhesText}>
+    Ver detalhes
+  </Text>
+</TouchableOpacity>
+            </View>
+
+            
+          ))
         )}
       </View>
     </ScrollView>
@@ -171,6 +205,23 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111827",
   },
+
+  verDetalhesBtn: {
+  marginTop: 10,
+  alignSelf: "flex-start",
+  backgroundColor: "#DBEAFE",
+  borderWidth: 1,
+  borderColor: "#93C5FD",
+  paddingHorizontal: 10,
+  paddingVertical: 6,
+  borderRadius: 8,
+},
+
+verDetalhesText: {
+  color: "#1D4ED8",
+  fontWeight: "700",
+  fontSize: 12,
+},
 
   description: {
     color: "#475569",

@@ -9,6 +9,7 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/types";
@@ -45,6 +46,8 @@ function StarRating({
 
 export default function AvaliarLocal({ route, navigation }: Props) {
   const { ponto } = route.params;
+  const [imagemSelecionada, setImagemSelecionada] = useState<string | null>(null);
+const [modalVisivel, setModalVisivel] = useState(false);
 
   const [avaliacaoGeral, setAvaliacaoGeral] = useState(0);
   const [seguranca, setSeguranca] = useState(0);
@@ -56,20 +59,20 @@ export default function AvaliarLocal({ route, navigation }: Props) {
 
   async function handleAdicionarFoto() {
     if (fotos.length >= 5) {
-        Alert.alert("Limite atingido", "Você pode adicionar no máximo 5 fotos.");
-        return;
+      Alert.alert("Limite atingido", "Você pode adicionar no máximo 5 fotos.");
+      return;
     }
 
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-        Alert.alert("Permissão negada", "Precisamos de acesso à sua galeria.");
-        return;
+      Alert.alert("Permissão negada", "Precisamos de acesso à sua galeria.");
+      return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["images"],
-        allowsEditing: true,
-        quality: 0.7,
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 0.7,
     });
 
     if (result.canceled) return;
@@ -80,60 +83,68 @@ export default function AvaliarLocal({ route, navigation }: Props) {
     const fileName = `avaliacoes/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
     try {
-        const base64 = await FileSystem.readAsStringAsync(file.uri, {
+      const base64 = await FileSystem.readAsStringAsync(file.uri, {
         encoding: FileSystem.EncodingType.Base64,
-        });
-        const arrayBuffer = decode(base64);
+      });
+      const arrayBuffer = decode(base64);
 
-        const { error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("foto-ponto")
         .upload(fileName, arrayBuffer, {
-            contentType: mimeType,
-            upsert: false,
+          contentType: mimeType,
+          upsert: false,
         });
 
-        if (error) {
+      if (error) {
         Alert.alert("Erro ao enviar imagem", error.message);
         return;
-        }
+      }
 
-        const { data } = supabase.storage.from("foto-ponto").getPublicUrl(fileName);
-        setFotos([...fotos, data.publicUrl]);
+      const { data } = supabase.storage.from("foto-ponto").getPublicUrl(fileName);
+      setFotos([...fotos, data.publicUrl]);
 
     } catch (err: any) {
-        Alert.alert("Erro inesperado", err?.message ?? String(err));
+      Alert.alert("Erro inesperado", err?.message ?? String(err));
     }
-    }
+  }
+
+function abrirImagemFullScreen(uri: string) {
+  console.log("clicou na foto:", uri); // teste
+  setImagemSelecionada(uri);
+  setModalVisivel(true);
+}
 
   async function handleEnviar() {
     if (avaliacaoGeral === 0) {
-        Alert.alert("Atenção", "Por favor, dê uma avaliação geral ao local.");
-        return;
+      Alert.alert("Atenção", "Por favor, dê uma avaliação geral ao local.");
+      return;
     }
 
     setLoading(true);
     try {
-        const { data: userData, error: authError } = await supabase.auth.getUser();
-        if (authError || !userData?.user) {
+      const { data: userData, error: authError } = await supabase.auth.getUser();
+      if (authError || !userData?.user) {
         Alert.alert("Erro", "Você precisa estar logado para avaliar.");
         setLoading(false);
         return;
-        }
+      }
 
-        // Busca o id do usuário na tabela 'usuarios' pelo email
-        const { data: usuarioData, error: usuarioError } = await supabase
+      // Busca o id do usuário na tabela 'usuarios' pelo email
+      const { data: usuarioData, error: usuarioError } = await supabase
         .from("usuarios")
         .select("id")
         .eq("email", userData.user.email)
         .single();
 
-        if (usuarioError || !usuarioData) {
+      
+
+      if (usuarioError || !usuarioData) {
         Alert.alert("Erro", "Usuário não encontrado.");
         setLoading(false);
         return;
-        }
+      }
 
-        const { error } = await supabase.from("avaliacoes").insert({
+      const { error } = await supabase.from("avaliacoes").insert({
         ponto_id: ponto.id,
         usuario_id: usuarioData.id,
         nota_geral: avaliacaoGeral,
@@ -142,122 +153,147 @@ export default function AvaliarLocal({ route, navigation }: Props) {
         nota_estrutura: estrutura,
         comentario,
         midia_url: fotos.length > 0 ? fotos[0] : null,
-        });
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        Alert.alert("Sucesso!", "Avaliação enviada com sucesso.", [
+      Alert.alert("Sucesso!", "Avaliação enviada com sucesso.", [
         { text: "OK", onPress: () => navigation.goBack() },
-        ]);
+      ]);
     } catch (error: any) {
-        Alert.alert("Erro", error.message || "Não foi possível enviar a avaliação.");
+      Alert.alert("Erro", error.message || "Não foi possível enviar a avaliação.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-    }
+  }
 
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      {/*
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Avaliar local</Text>
-        <View style={{ width: 24 }} />
-      </View> 
-      */}
-
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Card do local */}
-        <View style={styles.card}>
-          {/* Info do ponto */}
-          <View style={styles.pontoInfo}>
-            <Image
-              source={
-                ponto.foto_url
-                  ? { uri: ponto.foto_url }
-                  : require("../../../assets/image.png")
-              }
-              style={styles.pontoImagem}
-            />
-            <View style={styles.pontoTextos}>
-              <Text style={styles.pontoNome}>{ponto.nome}</Text>
-              <Text style={styles.pontoEndereco}>{ponto.endereco}</Text>
-            </View>
-          </View>
-
-          {/* Avaliação geral */}
-          <Text style={styles.label}>Avaliação geral</Text>
-          <StarRating value={avaliacaoGeral} onChange={setAvaliacaoGeral} />
-
-          {/* Avaliação por aspectos */}
-          <Text style={styles.labelSecao}>Avaliação dos aspectos do local</Text>
-
-          <View style={styles.aspectoRow}>
-            <Text style={styles.aspectoLabel}>Segurança</Text>
-            <StarRating value={seguranca} onChange={setSeguranca} />
-          </View>
-
-          <View style={styles.aspectoRow}>
-            <Text style={styles.aspectoLabel}>Limpeza</Text>
-            <StarRating value={limpeza} onChange={setLimpeza} />
-          </View>
-
-          <View style={styles.aspectoRow}>
-            <Text style={styles.aspectoLabel}>Estrutura</Text>
-            <StarRating value={estrutura} onChange={setEstrutura} />
-          </View>
-
-          {/* Fotos */}
-          <Text style={styles.label}>Fotos do local (opcional)</Text>
-          <View style={styles.fotosRow}>
-            {fotos.map((uri, index) => (
-              <Image key={index} source={{ uri }} style={styles.fotoPreview} />
-            ))}
-            {fotos.length < 5 && (
-              <TouchableOpacity
-                style={styles.adicionarFotoBtn}
-                onPress={handleAdicionarFoto}
-              >
-                <Ionicons name="camera-outline" size={28} color="#4A7FD4" />
-                <Text style={styles.adicionarFotoTexto}>
-                  Adicionar fotos{"\n"}({fotos.length}/5)
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Comentário */}
-          <Text style={styles.label}>Comentário (opcional)</Text>
-          <TextInput
-            style={styles.comentarioInput}
-            placeholder="Descreva a sua avaliação..."
-            placeholderTextColor="#aaa"
-            multiline
-            maxLength={250}
-            value={comentario}
-            onChangeText={setComentario}
+    
+return (
+  <View style={styles.container}>
+    {/* Scroll principal */}
+    <ScrollView contentContainerStyle={styles.content}>
+      {/* Card do local */}
+      <View style={styles.card}>
+        {/* Info do ponto */}
+        <View style={styles.pontoInfo}>
+          <Image
+            source={
+              ponto.foto_url
+                ? { uri: ponto.foto_url }
+                : require("../../../assets/image.png")
+            }
+            style={styles.pontoImagem}
           />
-          <Text style={styles.contador}>{comentario.length}/250</Text>
+          <View style={styles.pontoTextos}>
+            <Text style={styles.pontoNome}>{ponto.nome}</Text>
+            <Text style={styles.pontoEndereco}>{ponto.endereco}</Text>
+          </View>
         </View>
 
-        {/* Botão enviar */}
-        <TouchableOpacity
-          style={styles.btnEnviar}
-          onPress={handleEnviar}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.btnEnviarTexto}>Enviar avaliação</Text>
+        {/* Avaliação geral */}
+        <Text style={styles.label}>Avaliação geral</Text>
+        <StarRating value={avaliacaoGeral} onChange={setAvaliacaoGeral} />
+
+        {/* Avaliação por aspectos */}
+        <Text style={styles.labelSecao}>Avaliação dos aspectos do local</Text>
+
+        <View style={styles.aspectoRow}>
+          <Text style={styles.aspectoLabel}>Segurança</Text>
+          <StarRating value={seguranca} onChange={setSeguranca} />
+        </View>
+
+        <View style={styles.aspectoRow}>
+          <Text style={styles.aspectoLabel}>Limpeza</Text>
+          <StarRating value={limpeza} onChange={setLimpeza} />
+        </View>
+
+        <View style={styles.aspectoRow}>
+          <Text style={styles.aspectoLabel}>Estrutura</Text>
+          <StarRating value={estrutura} onChange={setEstrutura} />
+        </View>
+
+        {/* Fotos */}
+        <Text style={styles.label}>Fotos do local (opcional)</Text>
+
+        <View style={styles.fotosRow}>
+          {fotos.map((uri, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => abrirImagemFullScreen(uri)}
+            >
+              <Image source={{ uri }} style={styles.fotoPreview} />
+            </TouchableOpacity>
+          ))}
+
+          {fotos.length < 5 && (
+            <TouchableOpacity
+              style={styles.adicionarFotoBtn}
+              onPress={handleAdicionarFoto}
+            >
+              <Ionicons name="camera-outline" size={28} color="#4A7FD4" />
+              <Text style={styles.adicionarFotoTexto}>
+                Adicionar fotos{"\n"}({fotos.length}/5)
+              </Text>
+            </TouchableOpacity>
           )}
+        </View>
+
+        {/* Comentário */}
+        <Text style={styles.label}>Comentário (opcional)</Text>
+        <TextInput
+          style={styles.comentarioInput}
+          placeholder="Descreva a sua avaliação..."
+          placeholderTextColor="#aaa"
+          multiline
+          maxLength={250}
+          value={comentario}
+          onChangeText={setComentario}
+        />
+
+        <Text style={styles.contador}>{comentario.length}/250</Text>
+      </View>
+
+      {/* Botão enviar */}
+      <TouchableOpacity
+        style={styles.btnEnviar}
+        onPress={handleEnviar}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.btnEnviarTexto}>Enviar avaliação</Text>
+        )}
+      </TouchableOpacity>
+    </ScrollView>
+
+    {/* MODAL FULLSCREEN */}
+    <Modal visible={modalVisivel} transparent animationType="fade">
+      <View style={styles.modalContainer}>
+        <TouchableOpacity
+          style={styles.fecharArea}
+          onPress={() => {
+            setModalVisivel(false);
+            setImagemSelecionada(null);
+          }}
+        >
+          <Ionicons name="close" size={30} color="#fff" />
         </TouchableOpacity>
-      </ScrollView>
-    </View>
-  );
+
+        {modalVisivel && imagemSelecionada ? (
+          <Image
+            key={imagemSelecionada}
+            source={{ uri: imagemSelecionada }}
+            style={styles.imagemFull}
+            resizeMode="contain"
+          />
+        ) : null}
+      </View>
+    </Modal>
+  </View>
+);
+
+  
 }
 
 const styles = StyleSheet.create({
@@ -265,6 +301,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#E8EDF2",
   },
+
+  modalContainer: {
+  flex: 1,
+  backgroundColor: "rgba(0,0,0,0.95)",
+  justifyContent: "center",
+  alignItems: "center",
+},
+
+imagemFull: {
+  width: "100%",
+  height: "80%",
+},
+
+fecharArea: {
+  position: "absolute",
+  top: 50,
+  right: 20,
+  zIndex: 10,
+},
+
   header: {
     backgroundColor: "#4A7FD4",
     paddingTop: 48,

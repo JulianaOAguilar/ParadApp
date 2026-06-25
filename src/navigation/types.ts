@@ -4,7 +4,8 @@ export type RootStackParamList = {
   Cadastro: undefined;
   TiposLocal: undefined;
   Details: { ponto: any };
-  NovoPonto: { tipo: string } // 👈 AQUI
+  AvaliacaoDetalhes: {avaliacao: any};
+  NovoPonto: { tipo: string };// 👈 AQUI
   Esquecer: undefined;
   Redefinir: undefined;
   AvaliarLocal: { ponto: any }; 

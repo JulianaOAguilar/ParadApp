@@ -21,27 +21,48 @@ export default function HomeScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(true);
 
   async function fetchPontos() {
-    setLoading(true);
+  setLoading(true);
 
-    const { data, error } = await supabase
-      .from("pontos_descanso")
-      .select("*")
-      .order("criado_em", { ascending: false });
+  const { data, error } = await supabase
+    .from("pontos_descanso")
+    .select(`
+      *,
+      avaliacoes(nota_geral)
+    `);
 
-    if (error) {
-      console.log("Erro ao buscar pontos:", error.message);
-      setLoading(false);
-      return;
-    }
-
-    setPontos(data || []);
+  if (error) {
+    console.log("Erro ao buscar pontos:", error.message);
     setLoading(false);
+    return;
   }
 
+  const pontosComMedia = (data || []).map((ponto) => {
+    const notas = ponto.avaliacoes?.map((a: any) => a.nota_geral) || [];
+
+    const media =
+      notas.length > 0
+        ? notas.reduce((acc: number, n: number) => acc + n, 0) / notas.length
+        : 0;
+
+    return {
+      ...ponto,
+      media,
+    };
+  });
+
+  setPontos(pontosComMedia);
+  setLoading(false);
+}
+  
+
   useEffect(() => {
+  const unsubscribe = navigation.addListener("focus", () => {
     fetchPontos();
     fetchUsuario();
-  }, []);
+  });
+
+  return unsubscribe;
+}, [navigation]);
 
 const [nomeUsuario, setNomeUsuario] = useState("")
 
@@ -54,6 +75,12 @@ async function fetchUsuario() {
   if (!user) return
 
   setNomeUsuario(user.user_metadata?.nome || "Usuário")
+}
+
+function renderStars(media: number) {
+  const fullStars = Math.round(media); // arredonda média
+
+  return "⭐".repeat(fullStars) + "☆".repeat(5 - fullStars);
 }
 
 
@@ -96,7 +123,7 @@ async function fetchUsuario() {
               style={styles.card}
               activeOpacity={0.8}
               onPress={() =>
-                navigation.navigate("details", {
+                navigation.navigate("Details", {
                   ponto: item,
                 })
               }
@@ -115,9 +142,9 @@ async function fetchUsuario() {
                   </Text>
 
 
-                   <Text style={styles.cardStars}>
-                    {item.stars || "⭐⭐⭐⭐⭐"}
-                  </Text>
+                  <Text style={styles.cardStars}>
+  {renderStars(item.media)}
+</Text>
  
                   <Text style={styles.cardLocation}>
                     📍 Local: {item.localizacao || "Não informado"}
