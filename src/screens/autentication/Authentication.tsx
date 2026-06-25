@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Alert, KeyboardAvoidingView, Platform, TextInpu
 import { useState } from "react";
 import { supabase } from "../../services/supabase";
 import { RootStackParamList } from "../../navigation/types";
+import React from "react";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -41,18 +42,17 @@ export default function Authentication({ navigation }: Props) {
     >
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.icone}>🚛</Text>
-        <Text style={styles.titulo}>Paradas</Text>
-        <Text style={styles.subtitulo}>Sua rota, seu descanso</Text>
+        <Text style={styles.titulo1}>ParadApp</Text>
       </View>
 
       {/* Formulário */}
       <View style={styles.formulario}>
+        <Text style={styles.titulo}>Login</Text>
         <Text style={styles.label}>E-mail</Text>
         <TextInput
           style={styles.input}
-          placeholder="seu@email.com"
-          placeholderTextColor="#9CA3AF"
+          placeholder="Email"
+          placeholderTextColor="#000000"
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
@@ -64,8 +64,8 @@ export default function Authentication({ navigation }: Props) {
         <View style={styles.inputSenhaContainer}>
           <TextInput
             style={styles.inputSenha}
-            placeholder="Sua senha"
-            placeholderTextColor="#9CA3AF"
+            placeholder="Senha"
+            placeholderTextColor="#000000"
             secureTextEntry={!senhaVisivel}
             autoCapitalize="none"
             value={senha}
@@ -75,7 +75,7 @@ export default function Authentication({ navigation }: Props) {
             onPress={() => setSenhaVisivel(!senhaVisivel)}
             style={styles.botaoOlho}
           >
-            <Text style={styles.textoOlho}>{senhaVisivel ? "🙈" : "👁️"}</Text>
+            <Text style={styles.textoOlho}></Text>
           </TouchableOpacity>
         </View>
 
@@ -113,7 +113,7 @@ export default function Authentication({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#111827",
+    backgroundColor: "#5A84E0",
     justifyContent: "center",
     paddingHorizontal: 24,
   },
@@ -130,12 +130,21 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 32,
     fontWeight: "800",
-    color: "#F9FAFB",
+    color: "#414141",
     letterSpacing: -0.5,
   },
+
+    titulo1: {
+    fontSize: 60,
+      fontFamily: "ProtestStrike",
+    fontWeight: "800",
+    color: "#414141",
+    letterSpacing: -0.5,
+  },
+
   subtitulo: {
     fontSize: 15,
-    color: "#6B7280",
+    color: "#1f1f1f",
     marginTop: 4,
   },
 
@@ -146,28 +155,25 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#9CA3AF",
+    color: "#000000",
     textTransform: "uppercase",
     letterSpacing: 0.8,
     marginBottom: 6,
     marginTop: 16,
   },
   input: {
-    backgroundColor: "#1F2937",
-    borderWidth: 1,
-    borderColor: "#374151",
+    backgroundColor: "#d4e6ff",
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: "#F9FAFB",
+    color: "#000000",
   },
   inputSenhaContainer: {
     flexDirection: "row",
-    backgroundColor: "#1F2937",
-    borderWidth: 1,
-    borderColor: "#374151",
+    backgroundColor: "#dbeaff",
     borderRadius: 12,
+    color: '#000',
     alignItems: "center",
   },
   inputSenha: {
@@ -175,7 +181,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: "#F9FAFB",
+    color: "#000000",
   },
   botaoOlho: {
     paddingHorizontal: 14,
@@ -189,19 +195,19 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   textoEsqueceuSenha: {
-    color: "#F59E0B",
+    color: "#ffffff",
     fontSize: 14,
     fontWeight: "500",
   },
 
   // Botão entrar
   botaoEntrar: {
-    backgroundColor: "#F59E0B",
-    borderRadius: 12,
+    backgroundColor: "#83ACE1",
+    borderRadius: 30,
     paddingVertical: 16,
     alignItems: "center",
     marginTop: 20,
-    shadowColor: "#F59E0B",
+    shadowColor: "#9ac6ff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -224,11 +230,11 @@ const styles = StyleSheet.create({
     marginTop: 36,
   },
   textoRodape: {
-    color: "#6B7280",
+    color: "#f8f8f8",
     fontSize: 14,
   },
   linkCadastro: {
-    color: "#F59E0B",
+    color: "#efff09",
     fontSize: 14,
     fontWeight: "700",
   },

@@ -12,7 +12,9 @@
     },
     "android": {
       "adaptiveIcon": {
-        "permissions": ["INTERNET"],
+        "permissions": [
+          "INTERNET"
+        ],
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
@@ -22,6 +24,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
