@@ -5,18 +5,35 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/types";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import { supabase } from "../services/supabase";
 
 type Props = NativeStackScreenProps<RootStackParamList, "details">;
 
-export default function StopDetailsScreen({ route }: Props) {
+
+export default function StopDetailsScreen({ route, navigation }: Props) {
   const { ponto } = route.params;
 
+  const [avaliacoes, setAvaliacoes] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function buscarAvaliacoes() {
+    const { data } = await supabase
+      .from("avaliacoes")
+      .select("*, usuarios(nome)")
+      .eq("ponto_id", ponto.id)
+      .order("criado_em", { ascending: false });
+      if (data) setAvaliacoes(data);
+    }
+    buscarAvaliacoes();
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.card}>
         {ponto.foto_url && (
           <Image source={{ uri: ponto.foto_url }} style={styles.image} />
@@ -75,29 +92,44 @@ export default function StopDetailsScreen({ route }: Props) {
 
           <TouchableOpacity
             style={styles.reviewButton}
-            onPress={() =>
-              Alert.alert(
-                "Implementar",
-                "Funcionalidade de avaliações será implementada em breve.",
-              )
-            }
+            onPress={() => navigation.navigate("AvaliarLocal", { ponto: ponto })}
           >
             <Text style={styles.reviewButtonText}>+ Avaliar</Text>
           </TouchableOpacity>
         </View>
 
         {/* Espaço para avaliações futuras */}
-        <View style={styles.reviewCard}>
-          <Text style={styles.reviewPlaceholder}>Nenhuma avaliação ainda.</Text>
-        </View>
-
-        <View style={styles.reviewCard}>
-          <Text style={styles.reviewPlaceholder}>
-            Espaço reservado para avaliações futuras.
+        
+        {avaliacoes.length === 0 ? (
+          <View style={styles.reviewCard}>
+            <Text style={styles.reviewPlaceholder}>Nenhuma avaliação ainda.</Text>
+          </View>
+        ) : (
+          avaliacoes.map((av) => (
+        <View key={av.id} style={styles.reviewCard}>
+          <Text style={{ fontWeight: "700", color: "#111827", marginBottom: 4 }}>
+            {av.usuarios?.nome ?? "Usuário"}
           </Text>
+          <Text style={{ color: "#F59E0B", fontSize: 16 }}>
+            {"★".repeat(av.nota_geral)}{"☆".repeat(5 - av.nota_geral)}
+          </Text>
+          {av.comentario ? (
+            <Text style={styles.reviewPlaceholder}>{av.comentario}</Text>
+          ) : null}
+          <Text style={{ color: "#94A3B8", fontSize: 11, marginTop: 4 }}>
+            Serviço: {av.nota_servico}★ · Limpeza: {av.nota_limpeza}★ · Estrutura: {av.nota_estrutura}★
+          </Text>
+          {av.midia_url ? (
+            <Image
+              source={{ uri: av.midia_url }}
+              style={{ width: "100%", height: 120, borderRadius: 8, marginTop: 8 }}
+            />
+          ) : null}
         </View>
+        ))
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
