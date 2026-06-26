@@ -12,7 +12,7 @@ export default function Authentication({ navigation }: Props) {
     const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#111827",
+    backgroundColor: "#5A84E0",
     paddingHorizontal: 24,
   },
   conteudo: {
@@ -28,7 +28,7 @@ export default function Authentication({ navigation }: Props) {
   titulo: {
     fontSize: 26,
     fontWeight: "800",
-    color: "#F9FAFB",
+    color: "#000000",
     textAlign: "center",
     marginBottom: 12,
     letterSpacing: -0.5,

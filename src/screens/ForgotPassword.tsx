@@ -75,7 +75,7 @@ export default function Authentication({ navigation }: Props) {
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: "#F9FAFB",
+    color: "#000000",
   },
   botaoEnviar: {
     backgroundColor: "#83ACE1",
@@ -102,7 +102,7 @@ export default function Authentication({ navigation }: Props) {
   // Tela de confirmação
   containerConfirmacao: {
     flex: 1,
-    backgroundColor: "#111827",
+    backgroundColor: "#5A84E0",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 32,
@@ -232,9 +232,6 @@ export default function Authentication({ navigation }: Props) {
         <Text style={styles.titulo1}>ParadApp</Text>
 
         <Text style={styles.titulo}>Esqueceu a senha?</Text>
-        <Text style={styles.subtitulo}>
-          Digite seu e-mail e enviaremos um link para você criar uma nova senha.
-        </Text>
 
         <Text style={styles.label}>E-mail</Text>
         <TextInput
@@ -255,7 +252,7 @@ export default function Authentication({ navigation }: Props) {
           activeOpacity={0.85}
         >
           {carregando ? (
-            <ActivityIndicator color="#111827" />
+            <ActivityIndicator color="#5A84E0" />
           ) : (
             <Text style={styles.textoBotaoEnviar}>Enviar link</Text>
           )}
