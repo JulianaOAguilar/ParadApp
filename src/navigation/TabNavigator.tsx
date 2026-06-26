@@ -4,6 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import PesquisarScreen from "../screens/PesquisarScreen";
 import NovoPontoTipos from "../screens/CadastrarPonto/TiposLocal";
+import InicioScreen from "../screens/InicioScreen";
+
+
 
 const Tab = createBottomTabNavigator();
 
@@ -29,6 +32,18 @@ export default function TabNavigator() {
         },
       }}
     >
+
+      <Tab.Screen
+        name="Inicio"
+        component={InicioScreen as any}
+        options={{
+          tabBarLabel: "Início",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
       <Tab.Screen
         name="Feed"
         component={HomeScreen as any}

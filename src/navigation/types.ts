@@ -13,4 +13,5 @@ export type RootStackParamList = {
   | { ponto: any; avaliacao?: undefined }
   | { avaliacao: any; ponto?: undefined };
   Pesquisar: undefined;
+  Rota: { saida: { nome: string; lat: number; lon: number }; destino: { nome: string; lat: number; lon: number } };
 };

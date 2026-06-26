@@ -16,6 +16,7 @@ import AvaliarLocal from "../screens/Avaliacao/AvaliarLocal";
 import AvaliacaoDetalhhes from "../screens/Avaliacao/AvaliacoesDetails";
 import Denuncia from "../screens/Denuncias";
 
+import RotaScreen from "../screens/RotaScreen";
 import TabNavigator from "./TabNavigator"; 
 
 
@@ -30,8 +31,8 @@ export default function AppNavigator() {
       <Stack.Screen name="Redefinir" component={NewPassword} />
       <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="TiposLocal" component={NovoPontoTipos} />
-      <Stack.Screen name="NovoPonto" component={CadastroPonto} />
-      <Stack.Screen name="Details" component={StopDetailsScreen} />
+      <Stack.Screen name="NovoPonto" component={CadastroPonto} options={{ headerShown: false }}/>
+      <Stack.Screen name="Details" component={StopDetailsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="AvaliarLocal" component={AvaliarLocal} />
             <Stack.Screen name="AvaliacaoDetalhes" component={AvaliacaoDetalhhes} />
                         <Stack.Screen name="Denuncia" component={Denuncia} />
@@ -41,7 +42,7 @@ export default function AppNavigator() {
   
       
       
-  
+    <Stack.Screen name="Rota" component={RotaScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

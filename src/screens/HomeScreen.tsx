@@ -13,6 +13,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/types";
 import { useEffect, useState } from "react";
 import { supabase } from "../services/supabase";
+import { Ionicons } from "@expo/vector-icons";
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
 
@@ -87,17 +88,24 @@ function renderStars(media: number) {
 
 
   return (
+    
      <View style={styles.container}>
+      <View style={styles.headerRow}>
+        <Ionicons name="menu-outline" size={26} color="#fff" />
+        <Text style={styles.feedTitle}>Feed</Text>
+        <Ionicons name="notifications-outline" size={24} color="#fff" />
+      </View>
     {/* HEADER */}
+    {/*}
     <Text style={styles.title}>
       Olá, {nomeUsuario}!
     </Text>
 
     <Text style={styles.subtitle}>
       Encontre os melhores pontos de parada na sua rota!
-    </Text>
+    </Text> */}
 
-    <Text style={styles.feedTitle}>Feed</Text>
+h
 
     {/* CARD PRINCIPAL */}
     <View style={styles.feedContainer}>
@@ -183,6 +191,7 @@ function renderStars(media: number) {
   </View> 
      );
 }const styles = StyleSheet.create({
+  
   container: {
     flex: 1,
     backgroundColor: "#5A84E0",
@@ -190,11 +199,13 @@ function renderStars(media: number) {
     paddingTop: 50,
   },
 
-  title: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#FFFFFF",
+    headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
   },
+
+
 
   subtitle: {
     color: "#E5E7EB",
