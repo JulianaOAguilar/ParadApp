@@ -4,254 +4,231 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Alert,
   ScrollView,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/types";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabase";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
 
-
 export default function StopDetailsScreen({ route, navigation }: Props) {
   const { ponto } = route.params;
-
   const [avaliacoes, setAvaliacoes] = useState<any[]>([]);
 
-useEffect(() => {
-  const unsubscribe = navigation.addListener("focus", () => {
-    buscarAvaliacoes();
-  });
-
-  return unsubscribe;
-}, [navigation]);
-
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      buscarAvaliacoes();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   async function buscarAvaliacoes() {
-      const { data } = await supabase
-        .from("avaliacoes")
-        .select("*, usuarios(nome)")
-        .eq("ponto_id", ponto.id)
-        .order("criado_em", { ascending: false });
-      if (data) setAvaliacoes(data);
-    }
-    buscarAvaliacoes();
+    const { data } = await supabase
+      .from("avaliacoes")
+      .select("*, usuarios(nome)")
+      .eq("ponto_id", ponto.id)
+      .order("criado_em", { ascending: false });
+    if (data) setAvaliacoes(data);
+  }
 
   const totalAvaliacoes = avaliacoes.length;
-
   const mediaGeral =
     totalAvaliacoes > 0
-      ? (
-        avaliacoes.reduce((acc, av) => acc + av.nota_geral, 0) /
-        totalAvaliacoes
-      ).toFixed(1)
+      ? (avaliacoes.reduce((acc, av) => acc + av.nota_geral, 0) / totalAvaliacoes).toFixed(1)
       : "0.0";
 
-
+  const servicos = [
+    { label: "Banheiro", icone: "people-outline", ativo: ponto.banheiro },
+    { label: "Chuveiro", icone: "water-outline", ativo: ponto.chuveiro },
+    { label: "Alimentação", icone: "restaurant-outline", ativo: ponto.restaurante },
+    { label: "Sinal", icone: "cellular-outline", ativo: ponto.sinal_rede },
+    { label: "Estacionamento", icone: "bus-outline", ativo: ponto.estacionamento_caminhoes },
+  ].filter((s) => s.ativo);
 
   return (
+    <View style={styles.container}>
+      {/* Header azul */}
+      <SafeAreaView style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={26} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{ponto.nome}</Text>
+        <TouchableOpacity
+          style={styles.reportBtn}
+          onPress={() => navigation.navigate("Denuncia", { ponto })}
+        >
+          <Text style={styles.reportText}>⚠️ Denunciar</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
 
-    
-    <ScrollView style={styles.container}>
-
-      
-      <View style={styles.card}>
-
-        <View style={styles.header}>
-  <Text style={styles.title}>{ponto.nome}</Text>
-
-  <TouchableOpacity
-    style={styles.reportBtn}
-    onPress={() =>
-      navigation.navigate("Denuncia", {
-        ponto: ponto,
-      })
-    }
-  >
-    <Text style={styles.reportText}>⚠️ Denunciar</Text>
-  </TouchableOpacity>
-</View>
-
+      <ScrollView contentContainerStyle={styles.content}>
+        {/* Foto */}
         {ponto.foto_url && (
           <Image source={{ uri: ponto.foto_url }} style={styles.image} />
         )}
 
-        <Text style={styles.description}>{ponto.descricao}</Text>
+        {/* Card branco */}
+        <View style={styles.card}>
+          {/* Descrição */}
+          {ponto.descricao ? (
+            <Text style={styles.description}>{ponto.descricao}</Text>
+          ) : null}
 
-
-
-        <Text style={styles.info}>📍 {ponto.localizacao}</Text>
-
-        <View style={styles.tag}>
-          <Text style={styles.tagText}>Tipo: {ponto.tipo_local}</Text>
-        </View>
-
-
-        {/* SERVIÇOS */}
-        <Text style={styles.sectionTitle}>Serviços Oferecidos</Text>
-
-        <View style={styles.servicesContainer}>
-          {ponto.banheiro && (
-            <View style={styles.serviceTag}>
-              <Text style={styles.serviceText}>🚻 Banheiro</Text>
-            </View>
-          )}
-
-          {ponto.chuveiro && (
-            <View style={styles.serviceTag}>
-              <Text style={styles.serviceText}>🚿 Chuveiro</Text>
-            </View>
-          )}
-
-          {ponto.sinal_rede && (
-            <View style={styles.serviceTag}>
-              <Text style={styles.serviceText}>📶 Sinal</Text>
-            </View>
-          )}
-
-          {ponto.estacionamento_caminhoes && (
-            <View style={styles.serviceTag}>
-              <Text style={styles.serviceText}>🅿️ Estacionamento</Text>
-            </View>
-          )}
-        </View>
-
-        {/* AVALIAÇÕES */}
-        <View style={styles.ratingHeader}>
-          <View>
-            <Text style={styles.sectionTitle}>Avaliações</Text>
-
-            <Text style={styles.rating}>
-              ⭐ {mediaGeral} ({totalAvaliacoes} avaliações)
-            </Text>
+          {/* Localização */}
+          <View style={styles.infoRow}>
+            <Ionicons name="location-outline" size={16} color="#64748B" />
+            <Text style={styles.infoText}>{ponto.localizacao}</Text>
           </View>
 
-          <TouchableOpacity
-            style={styles.reviewButton}
-            onPress={() => navigation.navigate("AvaliarLocal", { ponto: ponto })}
-          >
-            <Text style={styles.reviewButtonText}>+ Avaliar</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Espaço para avaliações futuras */}
-
-        {avaliacoes.length === 0 ? (
-          <View style={styles.reviewCard}>
-            <Text style={styles.reviewPlaceholder}>Nenhuma avaliação ainda.</Text>
+          {/* Tipo */}
+          <View style={styles.tag}>
+            <Text style={styles.tagText}>Tipo: {ponto.tipo_local}</Text>
           </View>
-        ) : (
-          avaliacoes.map((av) => (
-            <View key={av.id} style={styles.reviewCard}>
-              <Text style={{ fontWeight: "700", color: "#111827", marginBottom: 4 }}>
-                {av.usuarios?.nome ?? "Usuário"}
-              </Text>
-              <Text style={{ color: "#F59E0B", fontSize: 16 }}>
-                {"★".repeat(av.nota_geral)}{"☆".repeat(5 - av.nota_geral)}
-              </Text>
-              {av.comentario ? (
-                <Text style={styles.reviewPlaceholder}>{av.comentario}</Text>
-              ) : null}
 
-              {av.midia_url ? (
-                <Image
-                  source={{ uri: av.midia_url }}
-                  style={{ width: "100%", height: 120, borderRadius: 8, marginTop: 8 }}
-                />
-              ) : null}
+          {/* Serviços */}
+          <Text style={styles.sectionTitle}>Serviços Oferecidos</Text>
+          <View style={styles.servicesContainer}>
+            {servicos.map((s) => (
+              <View key={s.label} style={styles.serviceTag}>
+                <Ionicons name={s.icone as any} size={14} color="#334155" />
+                <Text style={styles.serviceText}>{s.label}</Text>
+              </View>
+            ))}
+          </View>
 
-              <TouchableOpacity
-  style={styles.verDetalhesBtn}
-  onPress={() =>
-    navigation.navigate("AvaliacaoDetalhes", {
-      avaliacao: av,
-    })
-  }
->
-  <Text style={styles.verDetalhesText}>
-    Ver detalhes
-  </Text>
-</TouchableOpacity>
+          {/* Avaliações */}
+          <View style={styles.ratingHeader}>
+            <View>
+              <Text style={styles.sectionTitle}>Avaliações</Text>
+              <Text style={styles.rating}>
+                ⭐ {mediaGeral} ({totalAvaliacoes} avaliações)
+              </Text>
             </View>
+            <TouchableOpacity
+              style={styles.reviewButton}
+              onPress={() => navigation.navigate("AvaliarLocal", { ponto })}
+            >
+              <Text style={styles.reviewButtonText}>+ Avaliar</Text>
+            </TouchableOpacity>
+          </View>
 
-            
-          ))
-        )}
-      </View>
-    </ScrollView>
+          {/* Cards de avaliação */}
+          {avaliacoes.length === 0 ? (
+            <View style={styles.reviewCard}>
+              <Text style={styles.reviewPlaceholder}>Nenhuma avaliação ainda.</Text>
+            </View>
+          ) : (
+            avaliacoes.map((av) => (
+              <View key={av.id} style={styles.reviewCard}>
+                <View style={styles.reviewHeader}>
+                  <View style={styles.avatarCircle}>
+                    <Ionicons name="person-outline" size={16} color="#4A7FD4" />
+                  </View>
+                  <Text style={styles.reviewNome}>{av.usuarios?.nome ?? "Usuário"}</Text>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("Denuncia", { ponto })}
+                    style={{ marginLeft: "auto" }}
+                  >
+                    <Ionicons name="warning-outline" size={18} color="#94A3B8" />
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.reviewStars}>
+                  {"★".repeat(av.nota_geral)}{"☆".repeat(5 - av.nota_geral)}
+                </Text>
+
+                {av.comentario ? (
+                  <Text style={styles.reviewPlaceholder}>{av.comentario}</Text>
+                ) : null}
+
+                {av.midia_url ? (
+                  <Image
+                    source={{ uri: av.midia_url }}
+                    style={styles.reviewImage}
+                  />
+                ) : null}
+
+                <TouchableOpacity
+                  style={styles.verDetalhesBtn}
+                  onPress={() => navigation.navigate("AvaliacaoDetalhes", { avaliacao: av })}
+                >
+                  <Text style={styles.verDetalhesText}>Ver detalhes</Text>
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#5A84E0",
-    padding: 16,
   },
-
-  reviewButton: {
-    backgroundColor: "#F59E0B",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 10,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingBottom: 0,
   },
-
-  reviewButtonText: {
-    color: "#111827",
+  headerTitle: {
+    color: "#fff",
+    fontSize: 20,
     fontWeight: "700",
-    fontSize: 13,
-  },
-
-  card: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 16,
+    textAlign: "center",
+    marginHorizontal: 8,
   },
-
+  reportBtn: {
+    backgroundColor: "#FEE2E2",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  reportText: {
+    color: "#DC2626",
+    fontWeight: "700",
+    fontSize: 11,
+  },
+  content: {
+    paddingBottom: 40,
+  },
   image: {
     width: "100%",
-    height: 220,
-    borderRadius: 16,
-    marginBottom: 16,
+    height: 240,
   },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#111827",
+  card: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    marginTop: -20,
+    padding: 20,
+    minHeight: 400,
   },
-
-  verDetalhesBtn: {
-  marginTop: 10,
-  alignSelf: "flex-start",
-  backgroundColor: "#DBEAFE",
-  borderWidth: 1,
-  borderColor: "#93C5FD",
-  paddingHorizontal: 10,
-  paddingVertical: 6,
-  borderRadius: 8,
-},
-
-verDetalhesText: {
-  color: "#1D4ED8",
-  fontWeight: "700",
-  fontSize: 12,
-},
-
   description: {
     color: "#475569",
-    marginTop: 12,
+    fontSize: 14,
     lineHeight: 22,
+    marginBottom: 10,
   },
-
-  info: {
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 12,
+  },
+  infoText: {
     color: "#64748B",
-    marginTop: 10,
-    marginBottom: 15,
+    fontSize: 14,
   },
-
   tag: {
     alignSelf: "flex-start",
     backgroundColor: "#DBEAFE",
@@ -259,76 +236,61 @@ verDetalhesText: {
     borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 8,
-    marginTop: 10,
+    borderRadius: 20,
   },
-
   tagText: {
     color: "#1D4ED8",
     fontWeight: "700",
     fontSize: 12,
   },
-
-  header: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-},
-
-reportBtn: {
-  backgroundColor: "#FEE2E2",
-  paddingHorizontal: 10,
-  paddingVertical: 6,
-  borderRadius: 8,
-},
-
-reportText: {
-  color: "#DC2626",
-  fontWeight: "700",
-  fontSize: 12,
-},
-
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700",
     color: "#111827",
     marginBottom: 12,
     marginTop: 20,
   },
-
   servicesContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    gap: 8,
   },
-
   serviceTag: {
-    backgroundColor: "#E2E8F0",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "#F1F5F9",
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 10,
-    marginRight: 8,
-    marginBottom: 8,
+    borderRadius: 20,
   },
-
   serviceText: {
     color: "#334155",
     fontWeight: "600",
     fontSize: 12,
   },
-
   ratingHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 10,
   },
-
   rating: {
     color: "#F59E0B",
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "700",
   },
-
+  reviewButton: {
+    backgroundColor: "#F59E0B",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  reviewButtonText: {
+    color: "#111827",
+    fontWeight: "700",
+    fontSize: 13,
+  },
   reviewCard: {
     backgroundColor: "#F8FAFC",
     borderRadius: 12,
@@ -337,8 +299,53 @@ reportText: {
     borderWidth: 1,
     borderColor: "#E2E8F0",
   },
-
+  reviewHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 6,
+  },
+  avatarCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#DBEAFE",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reviewNome: {
+    fontWeight: "700",
+    color: "#111827",
+    fontSize: 14,
+  },
+  reviewStars: {
+    color: "#F59E0B",
+    fontSize: 18,
+    marginBottom: 4,
+  },
   reviewPlaceholder: {
     color: "#64748B",
+    fontSize: 13,
+  },
+  reviewImage: {
+    width: "100%",
+    height: 120,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  verDetalhesBtn: {
+    marginTop: 10,
+    alignSelf: "flex-start",
+    backgroundColor: "#DBEAFE",
+    borderWidth: 1,
+    borderColor: "#93C5FD",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  verDetalhesText: {
+    color: "#1D4ED8",
+    fontWeight: "700",
+    fontSize: 12,
   },
 });
