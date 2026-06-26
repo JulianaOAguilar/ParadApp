@@ -245,7 +245,7 @@ export default function Register({ navigation }: Props) {
               <Text style={styles.label}>Nome</Text>
               <TextInput
                 style={styles.input}
-                placeholder="João"
+                placeholder="Digite seu nome"
                 placeholderTextColor="#000000"
                 autoCapitalize="words"
                 value={nome}

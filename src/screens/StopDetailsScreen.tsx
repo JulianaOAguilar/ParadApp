@@ -78,9 +78,6 @@ useEffect(() => {
           <Image source={{ uri: ponto.foto_url }} style={styles.image} />
         )}
 
-        <Text style={styles.title}>{ponto.nome}</Text>
-
-
         <Text style={styles.description}>{ponto.descricao}</Text>
 
 
